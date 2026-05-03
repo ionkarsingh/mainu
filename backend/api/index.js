@@ -36,6 +36,26 @@ app.get('/debug', (req, res) => {
   });
 });
 
+// Test endpoint without database
+app.get('/test', (req, res) => {
+  res.status(200).json({ 
+    message: 'Serverless function is working',
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    url: req.url
+  });
+});
+
+// Test login endpoint without database
+app.post('/test-login', (req, res) => {
+  console.log('Test login request body:', req.body);
+  res.status(200).json({ 
+    message: 'Test login endpoint working',
+    received: req.body,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -56,9 +76,18 @@ module.exports = async (req, res) => {
     app(req, res);
   } catch (error) {
     console.error('Serverless function error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Server error: ' + error.message 
-    });
+    
+    // Handle specific database timeout errors
+    if (error.message.includes('timeout') || error.message.includes('timed out')) {
+      res.status(503).json({ 
+        success: false, 
+        message: 'Database connection timeout. Please try again.' 
+      });
+    } else {
+      res.status(500).json({ 
+        success: false, 
+        message: 'Server error: ' + error.message 
+      });
+    }
   }
 };

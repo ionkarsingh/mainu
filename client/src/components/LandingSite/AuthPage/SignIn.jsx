@@ -34,22 +34,47 @@ export default function SignIn() {
 
     if (result.success) {
       localStorage.setItem("token", result.data.token);
-      let student = await fetch(`${API_BASE_URL}/api/student/get-student`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          isAdmin: result.data.user.isAdmin,
-          token: result.data.token})
-      });
+      
+      if (result.data.user.isAdmin) {
+        // Admin login - call admin endpoint
+        let admin = await fetch(`${API_BASE_URL}/api/admin/get-admin`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            isAdmin: result.data.user.isAdmin,
+            token: result.data.token})
+        });
 
-      let studentResult = await student.json();
-      if (studentResult.success) {
-        localStorage.setItem("student", JSON.stringify(studentResult.student));
-        navigate("/student-dashboard");
+        let adminResult = await admin.json();
+        if (adminResult.success) {
+          localStorage.setItem("admin", JSON.stringify(adminResult.admin));
+          navigate("/admin-dashboard");
+        } else {
+          console.error("Admin login failed:", adminResult.errors);
+          toast.error("Admin login failed");
+        }
       } else {
-        // console.log(studentResult.errors)
+        // Student login - call student endpoint
+        let student = await fetch(`${API_BASE_URL}/api/student/get-student`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            isAdmin: result.data.user.isAdmin,
+            token: result.data.token})
+        });
+
+        let studentResult = await student.json();
+        if (studentResult.success) {
+          localStorage.setItem("student", JSON.stringify(studentResult.student));
+          navigate("/student-dashboard");
+        } else {
+          console.error("Student login failed:", studentResult.errors);
+          toast.error("Student login failed");
+        }
       }
     } else {
       // alert(result.errors[0].msg);

@@ -29,6 +29,18 @@
       "dest": "/backend/api/index.js"
     },
     {
+      "src": "/test",
+      "dest": "/backend/api/index.js"
+    },
+    {
+      "src": "/test-login",
+      "dest": "/backend/api/index.js"
+    },
+    {
+      "src": "/reset-password",
+      "dest": "/backend/api/reset-password.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/client/$1"
     }

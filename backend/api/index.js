@@ -27,5 +27,18 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
-// Export for Vercel
-module.exports = app;
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    success: false, 
+    message: 'Server error',
+    error: process.env.NODE_ENV === 'production' ? {} : err.stack 
+  });
+});
+
+// Export for Vercel serverless function
+module.exports = (req, res) => {
+  console.log('Request received:', req.method, req.url);
+  app(req, res);
+};

@@ -27,6 +27,15 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
 
+// Debug endpoint
+app.get('/debug', (req, res) => {
+  res.status(200).json({ 
+    env: process.env.NODE_ENV,
+    mongoUri: process.env.MONGO_URI ? 'Set' : 'Not set',
+    jwtSecret: process.env.JWT_SECRET ? 'Set' : 'Not set'
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -38,7 +47,18 @@ app.use((err, req, res, next) => {
 });
 
 // Export for Vercel serverless function
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   console.log('Request received:', req.method, req.url);
-  app(req, res);
+  
+  try {
+    // Ensure database is connected before handling request
+    await connectDB();
+    app(req, res);
+  } catch (error) {
+    console.error('Serverless function error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error: ' + error.message 
+    });
+  }
 };

@@ -71,8 +71,27 @@ module.exports = async (req, res) => {
   console.log('Request received:', req.method, req.url);
   
   try {
-    // Ensure database is connected before handling request
-    await connectDB();
+    // Ensure database is connected before handling request with retry logic
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (retryCount < maxRetries) {
+      try {
+        await connectDB();
+        break; // Success, exit retry loop
+      } catch (dbError) {
+        console.error(`Database connection attempt ${retryCount + 1} failed:`, dbError.message);
+        retryCount++;
+        
+        if (retryCount >= maxRetries) {
+          throw dbError;
+        }
+        
+        // Wait before retrying (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+      }
+    }
+    
     app(req, res);
   } catch (error) {
     console.error('Serverless function error:', error);
@@ -81,7 +100,12 @@ module.exports = async (req, res) => {
     if (error.message.includes('timeout') || error.message.includes('timed out')) {
       res.status(503).json({ 
         success: false, 
-        message: 'Database connection timeout. Please try again.' 
+        message: 'Database connection timeout. Please try again in a moment.' 
+      });
+    } else if (error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED')) {
+      res.status(503).json({ 
+        success: false, 
+        message: 'Database connection failed. Please check your network.' 
       });
     } else {
       res.status(500).json({ 

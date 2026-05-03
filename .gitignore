@@ -107,3 +107,4 @@ Thumbs.db
 *.md text eol=crlf
 *.yml text eol=crlf
 *.yaml text eol=crlf
+.vercel

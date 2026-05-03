@@ -21,4 +21,28 @@
     "$date": "2023-05-10T13:04:25.419Z"
   },
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "645b965902723b061fab22a3"
+  },
+  "name": "Muskan",
+  "email": "muskan@gmail.com",
+  "father_name": "Father Name",
+  "contact": "03000000000",
+  "address": "Address",
+  "dob": {
+    "$date": "2000-01-01T00:00:00.000Z"
+  },
+  "cnic": "0000000000000",
+  "user": {
+    "$oid": "6467df72c2b3142559d29325"
+  },
+  "hostel": {
+    "$oid": "645aae56db7005c0dc64fd92"
+  },
+  "date": {
+    "$date": "2024-05-02T10:30:00.000Z"
+  },
+  "__v": 0
 }]

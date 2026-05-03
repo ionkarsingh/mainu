@@ -5,7 +5,7 @@
   "email": "muhammaddanish14@gmail.com",
   "password": "$2a$10$o7kxmuInXN3xMyabWNfMouQ/0/8kuAhQRRiRTW.tl./1MfxwGyRyu",
   "isAdmin": true,
-  "date": {
+  "date": { 
     "$date": "2023-05-10T13:04:25.162Z"
   },
   "__v": 0
@@ -31,6 +31,18 @@
   "isAdmin": false,
   "date": {
     "$date": "2023-05-19T20:43:30.622Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6467df72c2b3142559d29325"
+  },
+  "email": "muskan@gmail.com",
+  "password": "$2a$10$rJ9xwZvNg.4wZqet7GiL8uxZ23DR8FbqoBOWykzRbWdYPdfZa3Gba",
+  "isAdmin": true,
+  "date": {
+    "$date": "2024-05-02T10:30:00.000Z"
   },
   "__v": 0
 }]
